@@ -11,7 +11,7 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-### Orders by ZIP - data to 2020-04-20
+### Orders by ZIP - data all time to 2020-04-20
 
 ```{r include=FALSE}
 library(tidyverse)
