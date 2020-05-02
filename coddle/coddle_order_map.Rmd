@@ -1,0 +1,68 @@
+---
+title: "Coddle Order Mapping"
+author: "Paul Newnes"
+date: "2020-05-02"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Orders by ZIP - data to 2020-04-20
+
+```{r include=FALSE}
+library(tidyverse)
+library(leaflet)
+library(readxl)
+```
+
+```{r import data, include=FALSE}
+## Import orders and summarize to ZIP
+orders <-
+  read_excel(
+    "/Users/paulnewnes/Box/R_Data/Coddle/ERP/ERP_manual_exports/AllOrders-20200420.xlsx"
+  ) %>%
+  mutate_at(vars(ShiptoZip), as.character) %>% 
+  mutate(ZIP = if_else(nchar(ShiptoZip) == 4, paste0("0", ShiptoZip), ShiptoZip)) %>% 
+  #mutate(invoice = as.character(Invoice), ZIP = ShiptoZip) %>% 
+  group_by(ZIP) %>% 
+  summarise(revenue = sum(ExtnAmount)) %>% 
+  ungroup()
+  
+## Icon
+coddle_icon <-
+  makeIcon(iconUrl      = "https://misc-site-images.s3.eu-west-2.amazonaws.com/coddle_icon.png",
+           iconWidth    = 32,
+           iconHeight   = 32)
+
+## ZIP data
+orders_geo <-
+  read_csv(
+    "/Users/paulnewnes/Box/R_Data/Coddle/ERP/ERP_manual_exports/US_zip_lat_lon.csv"
+  ) %>% 
+  transmute(
+    ZIP = if_else(nchar(Zip) == 4, paste0("0", as.character(Zip)), as.character(Zip)),
+    lat = Latitude,
+    lng = Longitude
+  ) %>% 
+  merge(orders, by = "ZIP")
+
+```
+
+```{r map, echo=FALSE, message = FALSE}
+
+
+## Create map
+orders_geo %>%
+  leaflet() %>%
+  addTiles() %>%
+  addMarkers(
+    clusterOptions = markerClusterOptions(),
+    icon           = coddle_icon,
+    popup          = paste0("$", orders_geo$revenue)
+  )
+```
+
