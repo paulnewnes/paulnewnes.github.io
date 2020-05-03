@@ -1,0 +1,82 @@
+---
+title: "Map - JH week 2 assignment"
+author: "Paul Newnes"
+date: "2020-05-03"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Six favourite places to eat
+
+```{r include=FALSE}
+library(tidyverse)
+library(leaflet)
+```
+
+```{r set data, include=FALSE}
+## Add icon vars
+burger_icon <- makeIcon(iconUrl    = "https://misc-site-images.s3.eu-west-2.amazonaws.com/burger-icon.png",
+                        iconWidth  = 32,
+                        iconHeight = 32)
+
+taco_icon <- makeIcon(iconUrl      = "https://misc-site-images.s3.eu-west-2.amazonaws.com/taco-icon.png",
+                        iconWidth  = 32,
+                        iconHeight = 32)
+
+# Set data
+lat  <- c(40.715791, 40.713935, 38.708794, 53.387538, 34.071356, 34.084223)
+lng  <- c(-73.956142, -73.962021, -9.147660, -2.352037, -118.362124, -118.322422)
+name <-
+  c(
+    "The Commodore",
+    "Dumont Burger",
+    "Pistola y Corazon",
+    "Altrincham Market",
+    "Mercado",
+    "Astro Burger"
+  )
+url  <- c(
+  "https://www.thecommodorebrooklyn.com",
+  "http://www.dumontburgerbrooklyn.com",
+  "https://pistolaycorazon.com",
+  "http://www.altrinchammarket.co.uk",
+  "http://www.cocinasycalaveras.com/mercado",
+  "http://www.astroburger.com"
+)
+food <- c(
+  "burger",
+  "burger",
+  "taco",
+  "burger",
+  "taco",
+  "burger"
+)
+
+# Create df
+my_fav_eats <- 
+  cbind(lat, lng, name, url, food) %>% 
+  as_tibble() %>% 
+  mutate_at(vars(lat, lng), as.numeric) %>% 
+  mutate(url.full = paste0('<a href = "', url, '">', name, '</a>'))
+```
+
+```{r map, echo=FALSE, message = FALSE}
+
+
+## Create map
+my_fav_eats %>%
+  leaflet() %>%
+  addTiles() %>%
+  addMarkers(
+    clusterOptions = markerClusterOptions(),
+    icon           = burger_icon,
+    #icon           = if_else(my_fav_eats$food == "burger", burger_icon, taco_icon),
+    popup          = my_fav_eats$url.full
+  )
+```
+
