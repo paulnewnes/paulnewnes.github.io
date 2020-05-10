@@ -13,10 +13,9 @@ library(plotly)
 library(tidyverse)
 ```
 
-## Plot
+## Random Normal Distribution
 
 - For this plot we're using randomised normal distribution data via `rnorm`.
-- The plot may look different each time the presentation runs.
 
 ```{r, echo=FALSE}
 plot.data <- rnorm(5000, mean = 50, sd = 1)
