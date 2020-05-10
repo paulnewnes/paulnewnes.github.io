@@ -1,0 +1,36 @@
+---
+title: "Week 3 - Plotly Example"
+author: "Paul Newnes"
+date: "10th May 2020"
+output: ioslides_presentation
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(plotly)
+library(tidyverse)
+```
+
+## Plot
+
+- For this plot we're using randomised normal distribution data via `rnorm`.
+- The plot may look different each time the presentation runs.
+
+```{r, echo=FALSE}
+plot.data <- rnorm(5000, mean = 50, sd = 1)
+```
+
+```{r}
+p2 <- plot_ly(x = ~plot.data,
+              type = "histogram") %>% 
+  layout(title = "Histogram of a random normal distribution",
+         xaxis = list(title = "Number",
+                      zeroline = FALSE),
+         yaxis = list(title = "Count",
+                      zeroline = FALSE))
+p2
+```
+
+## Thank you
