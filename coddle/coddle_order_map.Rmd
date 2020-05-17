@@ -62,7 +62,7 @@ orders_geo %>%
   addMarkers(
     clusterOptions = markerClusterOptions(),
     icon           = coddle_icon,
-    popup          = paste0("$", orders_geo$revenue)
+    popup          = paste0("$", orders_geo$revenue),
   )
 ```
 
